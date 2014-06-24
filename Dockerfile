@@ -13,7 +13,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q openssh-server && \
     echo 'root:root' | chpasswd
 
 # Utilities
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q vim curl wget ca-certificates apt-utils python-yaml python-setuptools
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q vim curl wget ca-certificates apt-utils python-yaml python-setuptools unzip
+
 
 # Install OpenJDK 7
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q openjdk-7-jre-headless
