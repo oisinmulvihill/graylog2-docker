@@ -39,8 +39,7 @@ RUN wget -q https://download.elasticsearch.org/elasticsearch/elasticsearch/elast
 
 # Graylog2 server
 # (forked version until they can merge my stuff
-RUN wget https://github.com/jamescarr/graylog2-server/archive/master.zip && \
-    unzip master.zip && rm master.zip
+RUN git clone https://github.com/jamescarr/graylog2-server.git
 
 # Fuck me plenty. Install play.
 ENV PLAYVERSION 2.2.2
@@ -48,17 +47,17 @@ RUN wget http://downloads.typesafe.com/play/$PLAYVERSION/play-$PLAYVERSION.zip &
     unzip play-$PLAYVERSION.zip && rm play-$PLAYVERSION.zip && \
     chmod a+x play-$PLAYVERSION/play && ln -s /play-$PLAYVERSION/play /usr/bin/play 
 
-RUN chmod +x /graylog2-server-master/build_script/build_server_release.sh 
-RUN cd /graylog2-server-master/build_script && \
+RUN chmod +x /graylog2-server/build_script/build_server_release.sh 
+RUN cd /graylog2-server/build_script && \
     ./build_server_release.sh 0.21.0-SNAPSHOT && \
     tar zxvf builds/graylog2-server-0.21.0-SNAPSHOT.tgz && \
     mv graylog2-server-0.21.0-SNAPSHOT /opt/graylog2-server
 
-RUN /bin/bash /graylog2-server-master/install-syslog4j-jar.sh 
+RUN /bin/bash /graylog2-server/install-syslog4j-jar.sh 
 
-RUN cd /graylog2-server-master && \
+RUN cd /graylog2-server && \
     mvn install -DskipTests && \
-    rm -rf /graylog2-server-master && \
+    rm -rf /graylog2-server && \
     mkdir -p /opt/graylog2-server/plugins
 
  
