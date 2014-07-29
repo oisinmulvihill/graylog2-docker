@@ -60,7 +60,6 @@ RUN cd /graylog2-server && \
     rm -rf /graylog2-server && \
     mkdir -p /opt/graylog2-server/plugins
 
- 
 # Graylog2 web interface
 RUN git clone https://github.com/jamescarr/graylog2-web-interface.git && \
     cd graylog2-web-interface &&  git submodule init && git submodule update 
