@@ -62,16 +62,8 @@ replace_admin_user() {
   sed -i -e "s/# root_username = admin/root_username = $user/" /etc/graylog2.conf
 }
 
-set_rest_transport() {
-  local uri=$1
-
-  sed -i -e "s/# rest_transport_uri =/rest_transport_uri = $uri/" /etc/graylog2.conf
-}
 
 main() {
-  is_defined "$GRAYLOG2_REST_TRANSPORT_URI" \
-    && set_rest_transport $GRAYLOG2_REST_TRANSPORT_URI
-
   is_defined "$GRAYLOG2_ES_PLUGINS" \
     && is_dir_not_empty /opt/graylog2-server/plugins \
     || install_plugins $GRAYLOG2_ES_PLUGINS
