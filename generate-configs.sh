@@ -65,7 +65,6 @@ replace_admin_user() {
 set_rest_transport() {
   local uri=$1
 
-  sed -i -e "s/rest_listen_uri = http:\/\/0.0.0.0:12900\//rest_listen_uri = $uri/" /etc/graylog2.conf
   sed -i -e "s/rest_transport_uri = http:\/\/0.0.0.0:12900\//rest_transport_uri = $uri/" /etc/graylog2.conf
 }
 

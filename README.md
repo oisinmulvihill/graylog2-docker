@@ -40,6 +40,7 @@ to include. Will install on first run. (e.g.
 * `GRAYLOG2_ADMIN_PASSWORD` - Sets the admin password for graylog2, must
 already be sha256 hashed. Do this in a console: ``echo $(echo -n clever | sha256sum | awk '{print $1}')``
 * `GRAYLOG2_ADMIN_USER` - Sets the admin password for graylog2
+* `GRAYLOG2_REST_TRANSPORT_URI` - sets the rest_transport_uri
 
 #### Graylog Elasticsearch Configuration
 You can also define any number of vairables to tune the definition of
