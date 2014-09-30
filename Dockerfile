@@ -15,15 +15,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q openssh-server && \
 # Utilities
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q vim curl wget ca-certificates apt-utils python-yaml python-setuptools unzip git
 
-# Graylog2 Build is tailored to OSX or BSD. Let's fix some things.
-RUN ln -s /bin/tar /bin/gtar
-RUN apt-get install -y maven
-
-# Install OpenJDK 7
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q openjdk-7-jdk openjdk-7-jre-headless
-
-RUN java -version
-RUN javac -version
 # MongoDB
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q pwgen && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
@@ -43,18 +34,17 @@ RUN dpkg -i graylog2-0.90-repository-ubuntu14.04_latest.deb
 RUN apt-get install apt-transport-https
 RUN apt-get update
 RUN apt-get install graylog2-server graylog2-web -yq
-RUN git clone https://github.com/jamescarr/graylog2-server.git
 
 # Configuration
-ADD ./ /opt/graylog2-docker
-RUN cd /opt/graylog2-docker && \
-    cp graylog2.conf /etc/graylog2.conf && \
-    sed -i -e "s/password_secret =$/password_secret = $(pwgen -s 96)/" /etc/graylog2.conf && \
-    sed -i -e "s/root_password_sha2 =$/root_password_sha2 = $(echo -n admin | sha256sum | awk '{print $1}')/" /etc/graylog2.conf && \
-    sed -i -e "s/application.secret=.*$/application.secret=\"$(pwgen -s 96)\"/" /opt/graylog2-web-interface/conf/graylog2-web-interface.conf && \
-    sed -i -e "s/graylog2-server.uris=.*$/graylog2-server.uris=\"http:\/\/127.0.0.1:12900\/\"/" /opt/graylog2-web-interface/conf/graylog2-web-interface.conf && \
-    echo "cluster.name: graylog2" >> /opt/elasticsearch/config/elasticsearch.yml && \
-    cp supervisord-graylog.conf /etc/supervisor/conf.d
+ADD ./graylog2.conf /etc/graylog2.conf
+RUN sed -i -e "s/password_secret =$/password_secret = $(pwgen -s 96)/" /etc/graylog2.conf
+RUN sed -i -e "s/root_password_sha2 =$/root_password_sha2 = $(echo -n admin | sha256sum | awk '{print $1}')/" /etc/graylog2.conf 
+RUN sed -i -e "s/application.secret=.*$/application.secret=\"$(pwgen -s 96)\"/" /etc/graylog2/web/graylog2-web-interface.conf 
+RUN sed -i -e "s/graylog2-server.uris=.*$/graylog2-server.uris=\"http:\/\/127.0.0.1:12900\/\"/" /etc/graylog2/web/graylog2-web-interface.conf 
+
+RUN echo "cluster.name: graylog2" >> /opt/elasticsearch/config/elasticsearch.yml
+RUN mkdir -p /etc/supervisor/conf.d
+ADD supervisord-graylog.conf /etc/supervisor/conf.d/
 
 # Graylog2 Dashboard
 RUN wget https://github.com/Graylog2/graylog2-stream-dashboard/releases/download/0.90/graylog2-stream-dashboard-0.90.0.tgz && \
