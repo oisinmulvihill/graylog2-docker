@@ -36,6 +36,7 @@ RUN apt-get update
 RUN apt-get install graylog2-server graylog2-web -yq
 
 # Configuration
+RUN mkdir -p /opt/graylog2-server/plugins
 ADD ./graylog2.conf /etc/graylog2.conf
 RUN sed -i -e "s/password_secret =$/password_secret = $(pwgen -s 96)/" /etc/graylog2.conf
 RUN sed -i -e "s/root_password_sha2 =$/root_password_sha2 = $(echo -n admin | sha256sum | awk '{print $1}')/" /etc/graylog2.conf 
