@@ -38,44 +38,13 @@ RUN wget -q https://download.elasticsearch.org/elasticsearch/elasticsearch/elast
     mv elasticsearch-* /opt/elasticsearch
 
 # Graylog2 server
-# (forked version until they can merge my stuff
+RUN wget https://packages.graylog2.org/repo/packages/graylog2-0.90-repository-ubuntu14.04_latest.deb
+RUN dpkg -i graylog2-0.90-repository-ubuntu14.04_latest.deb
+RUN apt-get install apt-transport-https
+RUN apt-get update
+RUN apt-get install graylog2-server graylog2-web -yq
 RUN git clone https://github.com/jamescarr/graylog2-server.git
 
-# Fuck me plenty. Install play.
-ENV PLAYVERSION 2.2.2
-RUN wget http://downloads.typesafe.com/play/$PLAYVERSION/play-$PLAYVERSION.zip && \
-    unzip play-$PLAYVERSION.zip && rm play-$PLAYVERSION.zip && \
-    chmod a+x play-$PLAYVERSION/play && ln -s /play-$PLAYVERSION/play /usr/bin/play 
-
-RUN chmod +x /graylog2-server/build_script/build_server_release.sh 
-RUN cd /graylog2-server/build_script && \
-    ./build_server_release.sh 0.21.0-SNAPSHOT && \
-    tar zxvf builds/graylog2-server-0.21.0-SNAPSHOT.tgz && \
-    mv graylog2-server-0.21.0-SNAPSHOT /opt/graylog2-server
-
-RUN /bin/bash /graylog2-server/install-syslog4j-jar.sh 
-
-RUN cd /graylog2-server && \
-    mvn install -DskipTests && \
-    rm -rf /graylog2-server && \
-    mkdir -p /opt/graylog2-server/plugins
-
-# Graylog2 web interface
-RUN git clone https://github.com/jamescarr/graylog2-web-interface.git && \
-    cd graylog2-web-interface &&  git submodule init && git submodule update 
-
-RUN cd /graylog2-web-interface && yes | /bin/bash ./build_release.sh
-
-RUN cd /graylog2-web-interface && \
-    ls target/universal && \
-    mv target/universal/graylog2-web-interface-*gz / && rm -rf /graylog2-web-interface
-
-RUN  tar zxvf /graylog2-web-interface*gz && rm /graylog2-web-interface*gz && \    
-    mv graylog2-web-interface* /opt/graylog2-web-interface && \
-    cat /opt/graylog2-web-interface/conf/graylog2-web-interface.conf
-    
-# remove play
-RUN rm -rf /play-$PLAYVERSION
 # Configuration
 ADD ./ /opt/graylog2-docker
 RUN cd /opt/graylog2-docker && \
