@@ -65,8 +65,7 @@ replace_admin_user() {
 set_bind_ip() {
   local host=$1
   
-  sed -i -e "s/rest_listen_uri = http:\/\/0.0.0.0:12900\//rest_listen_uri = http:\/\/$host:12900\//" /etc/graylog2.conf
-  sed -i -e "s/#rest_transport_uri = http:\/\/0.0.0.0:12900\//rest_transport_uri = http:\/\/$host:12900\//" /etc/graylog2.conf
+  sed -i -e "s/#rest_transport_uri = http:\/\/0.0.0.0:12900\/rest_transport_uri = $host/" /etc/graylog2.conf
 }
 main() {
   is_defined "$GRAYLOG2_HOST" \
