@@ -11,7 +11,7 @@ To get started quickly with an embedded elasticsearch instance, do this:
 
 ```bash
 
-docker run -d -p 9000:9000 -p 514:514 -p 12201:12201 jamescarr/graylog2-docker
+docker run -d -p 9000:9000 -p 514:514 -p 12201:12201 jamescarr/graylog2
 ```
 
 To get it rolling with an existing elasticsearch cluster
