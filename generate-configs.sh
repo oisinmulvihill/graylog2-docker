@@ -62,8 +62,16 @@ replace_admin_user() {
   sed -i -e "s/# root_username = admin/root_username = $user/" /etc/graylog2.conf
 }
 
-
+set_bind_ip() {
+  local host=$1
+  
+  sed -i -e "s/rest_listen_uri = http:\/\/0.0.0.0:12900\//rest_listen_uri = http:\/\/$host:12900\//" /etc/graylog2.conf
+  sed -i -e "s/#rest_transport_uri = http:\/\/0.0.0.0:12900\//rest_transport_uri = http:\/\/$host:12900\//" /etc/graylog2.conf
+}
 main() {
+  is_defined "$GRAYLOG2_HOST" \
+    && set_bind_ip $GRAYLOG2_HOST
+    
   is_defined "$GRAYLOG2_ES_PLUGINS" \
     && is_dir_not_empty /opt/graylog2-server/plugins \
     || install_plugins $GRAYLOG2_ES_PLUGINS
